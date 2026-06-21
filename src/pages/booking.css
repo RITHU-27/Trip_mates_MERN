@@ -1,0 +1,9 @@
+body {
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+.column.middle {
+  width: 40%;
+  font-size: 20px;
+}
