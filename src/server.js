@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require("express");
 const multer = require("multer");
 const path = require("path");
@@ -5,16 +6,25 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const signin = require('./models/signin');
 const app = express();
-const PORT = 7777;
+const PORT = process.env.PORT || 7777;
 app.use(cors());
 
 // Connect to MongoDB
-mongoose.connect('mongodb://localhost:27017/trip_mates')
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/trip_mates')
   .then(() => console.log('Connected to MongoDB'))
   .catch(err => console.error('MongoDB connection error:', err));
 
 // Middleware
 app.use(express.json());
+
+// Serve static files from React build in production
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '../build')));
+  
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../build', 'index.html'));
+  });
+}
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "uploads/");
